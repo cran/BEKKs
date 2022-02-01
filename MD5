@@ -1,4 +1,4 @@
-edbf20c7cab2f2060c2e3751610c62b3 *DESCRIPTION
+afdd20dec99bbb20f0a45788b8f46584 *DESCRIPTION
 d8480b2eb9e7812b832faa69fad80245 *LICENSE
 d15b16d61661876b2a63cf28fce87540 *NAMESPACE
 35662d077ca1b356179e614db7b1ef01 *R/BEKKs.R
@@ -17,7 +17,7 @@ de112983e83a5f411439558c3dd27454 *R/matrix_stuff.R
 bc4abcfda57c58bc035b0ecd5db6d7f7 *R/plot.var.R
 35761f899c78ee68844d2b1349d2f188 *R/summary.bekk.R
 2067a40f0d96548a94a60570a4f5da09 *R/zzz.R
-9e3d4270e94fa3a3bdd5d4dd47864e70 *build/BEKKs.pdf
+02deaba4d5e681c0c8f20dbcac5daa6e *build/BEKKs.pdf
 68d30c6d85e802243b39a8a862993c1f *data/GoldStocksBonds.RData
 3bf0bc324b5f877e8f3599dcc4f5bf42 *data/StocksBonds.RData
 9208fa681c5a205882e39aca8071e8a9 *man/BEKKs.Rd
@@ -35,13 +35,14 @@ d65cccbe378bd66bc1fe17460eb59645 *man/figures/VaR_portfolio_forecast.png
 1984f5d3c6a664fda44323d2fca4e2f3 *man/figures/VaR_single_forecast.png
 6a550fa74367a554d6b74416011f96bc *man/figures/est_vola.png
 226af4ec02c9f1a4585657982aa4e676 *man/figures/flow.png
-a0526a7279e69f849c798459cf371671 *src/BekkFunctions.cpp
-5b5838c3acef5e92b8c284e3ed179337 *src/BekkSim.cpp
-f2c044481846266c421ba32289ee9268 *src/IndicatorFunctions.h
-61059660eb073d93e00e8ee054237071 *src/Makevars
+41249d4d851341a7e1eec082644d1073 *src/BekkFunctions.cpp
+f55abbd60bd256cc57dceb002fd27544 *src/BekkSim.cpp
+441c3f368a5c29b6ff834ef78bf56df5 *src/IndicatorFunction.cpp
+dddad31d2ba1a89e5c388462ae350966 *src/IndicatorFunctions.h
+13b03cd3dd721948c30479759060bb49 *src/Makevars
 61059660eb073d93e00e8ee054237071 *src/Makevars.win
-b0c8a70787b5901b3248e9f1a2def3a2 *src/RcppExports.cpp
-3ffaf6eef3a032c85f3954539b3290c0 *src/ScalarBEKK.cpp
+509db299a0c5d5900acc335ef882cd5d *src/RcppExports.cpp
+6f57604e13309e425a7bf82d20f5d0f2 *src/ScalarBEKK.cpp
 e45bd677c8bfde56158f2d2c74c6ffe1 *src/YLagCr.cpp
 5baa84264d7aa9a547e90a74bea06e15 *tests/testthat.R
 214be1668fd4dbabd09a0cc0447d328b *tests/testthat/test-Grid_Search.R
