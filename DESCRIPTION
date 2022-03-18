@@ -1,6 +1,6 @@
 Package: BEKKs
 Title: Multivariate Conditional Volatility Modelling and Forecasting
-Version: 1.0.1
+Version: 1.1.0
 Authors@R: 
     c(person(given = "Markus",
            family = "Fülle",
@@ -25,10 +25,10 @@ LazyData: true
 Suggests: testthat (>= 2.1.0)
 RdMacros: mathjaxr
 RoxygenNote: 7.1.2
-Packaged: 2022-01-31 20:15:12 UTC; alex
+Packaged: 2022-03-18 21:28:57 UTC; alex
 Author: Markus Fülle [aut],
   Helmut Herwartz [aut],
   Alexander Lange [aut, cre]
 Maintainer: Alexander Lange <alexander.lange@uni-goettingen.de>
 Repository: CRAN
-Date/Publication: 2022-02-01 16:00:29 UTC
+Date/Publication: 2022-03-19 00:20:02 UTC
