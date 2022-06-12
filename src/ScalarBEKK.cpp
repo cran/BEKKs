@@ -945,7 +945,6 @@ arma::mat hesse_asymm_sbekk(arma::mat theta, arma::mat r, arma::mat signs){
 }
 
 
-
 // [[Rcpp::export]]
 Rcpp::List sigma_sbekk(arma::mat& r, arma::mat& C, double a, double g) {
   // Computation of second order moment time paths and GARCH innovations
@@ -1060,9 +1059,9 @@ Rcpp::List random_grid_search_sBEKK(arma::mat r) {
       }
     }
 
-        theta[numb_of_vars-2]= arma::randn()*0.03+theta_mu[numb_of_vars-2];
+    theta[numb_of_vars-2]= arma::randn()*0.03+theta_mu[numb_of_vars-2];
 
-        theta[numb_of_vars-1]=arma::randn()*0.03+theta_mu[numb_of_vars-1];
+    theta[numb_of_vars-1]=arma::randn()*0.03+theta_mu[numb_of_vars-1];
 
 
 
@@ -1102,7 +1101,6 @@ Rcpp::List random_grid_search_sBEKK(arma::mat r) {
 
 }
 
-
 //[[Rcpp::export]]
 Rcpp::List random_grid_search_asymmetric_sBEKK(arma::mat r, arma::mat signs) {
   int n =r.n_cols;
@@ -1133,10 +1131,9 @@ Rcpp::List random_grid_search_asymmetric_sBEKK(arma::mat r, arma::mat signs) {
       theta_mu[j]=  0.05*uncond_var(j,j);
       counter+=diagonal_elements;
       diagonal_elements--;
+
     }
-
   }
-
       theta_mu[numb_of_vars-3]=0.1;
 
 
@@ -1146,28 +1143,28 @@ Rcpp::List random_grid_search_asymmetric_sBEKK(arma::mat r, arma::mat signs) {
 
 
 
-  double best_val = loglike_asymm_sbekk(theta_mu,r,signs);
-  thetaOptim=theta_mu;
-  //set the seed
+      double best_val = loglike_asymm_sbekk(theta_mu,r,signs);
+      thetaOptim=theta_mu;
+      //set the seed
 
-  // Generating random values for A, B, C and G
-  while(l<4000 && m<=17){
-    int counter= 0;
-    int diagonal_elements = n;
-    int diagonal_counter = 0;
+      // Generating random values for A, B, C and G
+      while(l<4000 && m<=17){
+        int counter= 0;
+        int diagonal_elements = n;
+        int diagonal_counter = 0;
 
-    for (int j=0; j < (n*(n+1)/2);j++){
+        for (int j=0; j < (n*(n+1)/2);j++){
 
-      if(j == counter){
-        theta[j]=  theta_mu[j]+arma::randn()*0.001;
-        counter+=diagonal_elements;
-        diagonal_elements--;
-      }
-      else{
-        theta[j]=arma::randn()*0.00001+theta_mu[j];
+          if(j == counter){
+            theta[j]=  theta_mu[j]+arma::randn()*0.001;
+            counter+=diagonal_elements;
+            diagonal_elements--;
+          }
+          else{
+            theta[j]=arma::randn()*0.00001+theta_mu[j];
 
-      }
-    }
+          }
+        }
 
         theta[numb_of_vars-3]= arma::randn()*0.03+theta_mu[numb_of_vars-3];
 
@@ -1178,39 +1175,35 @@ Rcpp::List random_grid_search_asymmetric_sBEKK(arma::mat r, arma::mat signs) {
 
 
 
-    //arma::mat C = arma::zeros(n,n);
-    int  index=0;
-    for(int j=0; j <n; j++){
-      for (int k = j;k < n; k++) {
-        C(k,j)=theta[index];
-        index++;
+        //arma::mat C = arma::zeros(n,n);
+        int  index=0;
+        for(int j=0; j <n; j++){
+          for (int k = j;k < n; k++) {
+            C(k,j)=theta[index];
+            index++;
+          }
+        }
+
+        a = theta[numb_of_vars-3];
+        b = theta[numb_of_vars-2];
+        g = theta[numb_of_vars-1];
+
+        if(valid_asymm_sbekk(C,a,b,g,r,signs)){
+          l++;
+          double llv=loglike_asymm_sbekk(theta,r,signs);
+
+          if(llv>best_val){
+            m++;
+            best_val=llv;
+            thetaOptim=theta;
+            theta_mu=thetaOptim;
+          }
+          if(l>100 || m>=5){
+            theta_mu=thetaOptim;
+          }
+        }
       }
-    }
-
-    a = theta[numb_of_vars-3];
-    b = theta[numb_of_vars-2];
-    g = theta[numb_of_vars-1];
-
-    if(valid_asymm_sbekk(C,a,b,g,r,signs)){
-      l++;
-      double llv=loglike_asymm_sbekk(theta,r,signs);
-
-      if(llv>best_val){
-
-        m++;
-        best_val=llv;
-        thetaOptim=theta;
-        theta_mu=thetaOptim;
+        return Rcpp::List::create(Rcpp::Named("thetaOptim") = thetaOptim,
+                                  Rcpp::Named("best_val") = best_val);
 
       }
-      if(l>100 || m>=5){
-        theta_mu=thetaOptim;
-      }
-    }
-
-  }
-  return Rcpp::List::create(Rcpp::Named("thetaOptim") = thetaOptim,
-                            Rcpp::Named("best_val") = best_val);
-
-}
-

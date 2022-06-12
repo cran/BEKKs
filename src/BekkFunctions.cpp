@@ -213,7 +213,7 @@ double loglike_bekk(const arma::vec& theta, const arma::mat& r) {
 
   for(int i = 0; i < n; i++){
     for (int j = i; j < n; j++) {
-      C(j, i) = theta(index);
+      C(j, i) = theta[index];
       index += 1;
     }
    }
@@ -259,7 +259,7 @@ double loglike_asymm_bekk(const arma::vec& theta, const arma::mat& r, arma::mat&
 
   for(int i = 0; i < n; i++){
     for (int j = i; j < n; j++) {
-      C(j, i) = theta(index);
+      C(j, i) = theta[index];
       index += 1;
     }
   }
@@ -308,7 +308,7 @@ double loglike_dbekk(const arma::vec& theta, const arma::mat& r) {
 
   for(int i = 0; i < N; i++){
     for (int j = i; j < N; j++) {
-      C(j, i) = theta(index);
+      C(j, i) = theta[index];
       index += 1;
     }
   }
@@ -353,7 +353,7 @@ double loglike_asymm_dbekk(const arma::vec& theta, const arma::mat& r, arma::mat
 
   for(int i = 0; i < N; i++){
     for (int j = i; j < N; j++) {
-      C(j, i) = theta(index);
+      C(j, i) = theta[index];
       index += 1;
     }
   }
@@ -408,7 +408,7 @@ arma::mat score_bekk(const arma::mat& theta, arma::mat& r) {
 
   for(int i = 0; i < N; i++){
     for (int j = i; j < N; j++) {
-      c0(j, i) = theta(index);
+      c0(j, i) = theta[index];
       index += 1;
     }
   }
@@ -508,7 +508,7 @@ arma::mat score_dbekk(const arma::mat& theta, arma::mat& r) {
 
   for(int i = 0; i < N; i++){
     for (int j = i; j < N; j++) {
-      c0(j, i) = theta(index);
+      c0(j, i) = theta[index];
       index += 1;
     }
   }
@@ -610,7 +610,7 @@ arma::mat score_asymm_bekk(const arma::mat& theta, arma::mat& r, arma::mat& sign
 
   for(int i = 0; i < N; i++){
     for (int j = i; j < N; j++) {
-      c0(j, i) = theta(index);
+      c0(j, i) = theta[index];
       index += 1;
     }
   }
@@ -713,7 +713,7 @@ arma::mat score_asymm_dbekk(const arma::mat& theta, arma::mat& r, arma::mat& sig
 
   for(int i = 0; i < N; i++){
     for (int j = i; j < N; j++) {
-      c0(j, i) = theta(index);
+      c0(j, i) = theta[index];
       index += 1;
     }
   }
@@ -1708,7 +1708,7 @@ arma::mat hesse_bekk(arma::mat theta, arma::mat r){
   int index =0;
   for(int i = 0; i < N; i++){
     for (int j = i; j < N; j++) {
-      c0(j, i) = theta(index);
+      c0(j, i) = theta[index];
       index += 1;
     }
   }
@@ -1911,7 +1911,7 @@ arma::mat hesse_dbekk(arma::mat theta, arma::mat r){
   int index =0;
   for(int i = 0; i < N; i++){
     for (int j = i; j < N; j++) {
-      c0(j, i) = theta(index);
+      c0(j, i) = theta[index];
       index += 1;
     }
   }
@@ -2113,7 +2113,7 @@ arma::mat hesse_asymm_bekk(arma::mat theta, arma::mat r, arma::mat& signs){
   int index =0;
   for(int i = 0; i < N; i++){
     for (int j = i; j < N; j++) {
-      c0(j, i) = theta(index);
+      c0(j, i) = theta[index];
       index += 1;
     }
   }
@@ -2338,7 +2338,7 @@ arma::mat hesse_asymm_dbekk(arma::mat theta, arma::mat r, arma::mat& signs){
   int index =0;
   for(int i = 0; i < N; i++){
     for (int j = i; j < N; j++) {
-      c0(j, i) = theta(index);
+      c0(j, i) = theta[index];
       index += 1;
     }
   }
@@ -2553,6 +2553,102 @@ arma::mat eigen_value_decomposition(arma::mat& A){
 
 }
 
+// [[Rcpp::export]]
+arma::mat virf_bekk(arma::mat& H_t, arma::vec& theta, arma::mat& shocks, int& periods){
+  int N = H_t.n_rows;
+  int numb_of_vars = 2*pow(N,2)+(N*(N+1)/2);
+  arma::mat C = arma::zeros(N,N);
+  int index = 0;
+
+  for(int i = 0; i < N; i++){
+    for (int j = i; j < N; j++) {
+      C(j, i) = theta[index];
+      index += 1;
+    }
+  }
+
+
+  arma::mat A = arma::reshape(theta.subvec(index, (index + pow(N, 2)) - 1 ).t(), N, N);
+  arma::mat G = arma::reshape(theta.subvec((index +  pow(N, 2)), numb_of_vars-1).t(), N, N);
+
+
+  arma::mat virf = arma::zeros(periods, N*(N+1)/2);
+  arma::mat L_elimination = elimination_mat(N);
+  arma::mat D_duplication = duplication_mat(N);
+  arma::mat D_gen_inv = arma::inv(D_duplication.t() * D_duplication) * D_duplication.t();
+
+  arma::mat B_t = eigen_value_decomposition(H_t);
+  arma::mat A_virf = L_elimination * kron(A,A) * L_elimination.t();
+  arma::mat G_virf = L_elimination * kron(G,G) * L_elimination.t();
+
+  for (int i=0; i < periods; i++){
+    //arma::mat virf_temp =  L_elimination* arma::vectorise( C * C.t()) + arma::powmat(A_virf+G_virf, i) * A_virf * D_gen_inv * kron(B_t, B_t) * D_duplication * L_elimination * arma::vectorise((shocks.row(0).t() * shocks.row(0)-arma::eye(N,N)));
+    arma::mat virf_temp =  arma::powmat(A_virf+G_virf, i) * A_virf * D_gen_inv * kron(B_t, B_t) * D_duplication * L_elimination * arma::vectorise((shocks.row(0).t() * shocks.row(0)-arma::eye(N,N)));
+
+    virf.row(i) = virf_temp.t();
+  }
+    return virf;
+  }
+
+// [[Rcpp::export]]
+arma::mat virf_dbekk(arma::mat& H_t, arma::vec& theta, arma::mat& shocks, int& periods){
+  int N = H_t.n_rows;
+  int numb_of_vars = 2*N+(N*(N+1)/2);
+  arma::mat C = arma::zeros(N,N);
+  int index = 0;
+
+  for(int i = 0; i < N; i++){
+    for (int j = i; j < N; j++) {
+      C(j, i) = theta[index];
+      index += 1;
+    }
+  }
+
+  arma::mat A = arma::diagmat(theta.rows(N * (N+1)/2, N + (N * (N + 1)/2) - 1));
+  arma::mat G = arma::diagmat(theta.rows(N + N * (N + 1)/2, 2*N + (N * (N + 1)/2) - 1));
+
+
+  arma::mat virf = arma::zeros(periods, N*(N+1)/2);
+  arma::mat L_elimination = elimination_mat(N);
+  arma::mat D_duplication = duplication_mat(N);
+  arma::mat D_gen_inv = arma::inv(D_duplication.t() * D_duplication) * D_duplication.t();
+
+  arma::mat B_t = eigen_value_decomposition(H_t);
+  arma::mat A_virf = L_elimination * kron(A,A) * L_elimination.t();
+  arma::mat G_virf = L_elimination * kron(G,G) * L_elimination.t();
+
+  for (int i=0; i < periods; i++){
+    //arma::mat virf_temp =  L_elimination* arma::vectorise( C * C.t()) + arma::powmat(A_virf+G_virf, i) * A_virf * D_gen_inv * kron(B_t, B_t) * D_duplication * L_elimination * arma::vectorise((shocks.row(0).t() * shocks.row(0)-arma::eye(N,N)));
+    arma::mat virf_temp =  arma::powmat(A_virf+G_virf, i) * A_virf * D_gen_inv * kron(B_t, B_t) * D_duplication * L_elimination * arma::vectorise((shocks.row(0).t() * shocks.row(0)-arma::eye(N,N)));
+
+    virf.row(i) = virf_temp.t();
+  }
+  return virf;
+}
+
+
+// [[Rcpp::export]]
+arma::mat virf_bekka(arma::mat& H_t, arma::mat& C, arma::mat& A, arma::mat& B, arma::mat& G, arma::mat& signs, double& expected_signs, arma::mat& shocks, int& periods){
+  int N = A.n_rows;
+
+  arma::mat virf = arma::zeros(periods, N*(N+1)/2);
+  arma::mat L_elimination = elimination_mat(N);
+  arma::mat D_duplication = duplication_mat(N);
+  arma::mat D_gen_inv = arma::inv(D_duplication.t() * D_duplication) * D_duplication.t();
+
+  arma::mat B_t = eigen_value_decomposition(H_t);
+  arma::mat r = B_t * shocks.row(0).t();
+  arma::mat A_virf = L_elimination * kron(A,A) * L_elimination.t();
+  arma::mat B_virf = L_elimination * kron(B,B) * L_elimination.t();
+  arma::mat G_virf = L_elimination * kron(G,G) * L_elimination.t();
+
+  for (int i=0; i < periods; i++){
+    arma::mat virf_temp =  L_elimination* arma::vectorise( C * C.t()) + arma::powmat(A_virf+expected_signs*B_virf+G_virf, i) * (A_virf+indicatorFunction(r,signs)*B_virf) * D_gen_inv * kron(B_t, B_t) * D_duplication * L_elimination * arma::vectorise((shocks.row(0).t() * shocks.row(0)-arma::eye(N,N)));
+    virf.row(i) = virf_temp.t();
+  }
+  return virf;
+}
+
 /*
 // [[Rcpp::export]]
 Rcpp::List recursive_search_BEKK(arma::mat r, arma::vec c0, arma::vec avec,
@@ -2670,3 +2766,41 @@ Rcpp::List grid_search_BEKK(arma::mat r) {
   return result;
 }
  */
+
+
+// [[Rcpp::export]]
+arma::mat virf_sbekk(arma::mat& H_t, arma::vec& theta, arma::mat& shocks, int& periods){
+  int N = H_t.n_rows;
+
+  arma::mat C = arma::zeros(N,N);
+  int index = 0;
+
+  for(int i = 0; i < N; i++){
+    for (int j = i; j < N; j++) {
+      C(j, i) = theta[index];
+      index += 1;
+    }
+  }
+  index = N*(N+1)/2;
+  double a = theta[index];
+  double g = theta[index+1];
+
+  arma::mat virf = arma::zeros(periods, N*(N+1)/2);
+  arma::mat L_elimination = elimination_mat(N);
+  arma::mat D_duplication = duplication_mat(N);
+  arma::mat D_gen_inv = arma::inv(D_duplication.t() * D_duplication) * D_duplication.t();
+
+  arma::mat B_t = eigen_value_decomposition(H_t);
+  double A_virf = a;
+  double G_virf = g;
+
+  for (int i=0; i < periods; i++){
+    //arma::mat virf_temp =  L_elimination* arma::vectorise( C * C.t()) + arma::powmat(A_virf+G_virf, i) * A_virf * D_gen_inv * kron(B_t, B_t) * D_duplication * L_elimination * arma::vectorise((shocks.row(0).t() * shocks.row(0)-arma::eye(N,N)));
+    arma::mat virf_temp =  pow(A_virf+G_virf, i) * A_virf * D_gen_inv * kron(B_t, B_t) * D_duplication * L_elimination * arma::vectorise((shocks.row(0).t() * shocks.row(0)-arma::eye(N,N)));
+
+    virf.row(i) = virf_temp.t();
+  }
+  return virf;
+}
+
+
