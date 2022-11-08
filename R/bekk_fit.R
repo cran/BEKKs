@@ -63,7 +63,7 @@ bekk_fit <- function(spec, data, QML_t_ratios = FALSE,
                      max_iter = 50, crit = 1e-9){
 
   if (!inherits(spec, 'bekkSpec')) {
-    stop('Please provide and object of class "bekkSpec" for spec.')
+    stop('Please provide an object of class "bekkSpec" for spec.')
   }
 
   if (any(is.na(data))) {
@@ -147,9 +147,9 @@ bekk_fit.bekk <- function(spec, data, QML_t_ratios = FALSE,
 
   if (QML_t_ratios == TRUE) {
     tratios <- QML_t_ratios(params$theta, data)
-    tratios_mat <- coef_mat(abs(tratios), N)
+    tratios_mat <- coef_mat(tratios, N)
   } else {
-    tratios_mat <- coef_mat(abs(params$t_val), N)
+    tratios_mat <- coef_mat(params$t_val, N)
   }
 
   param_mat <- coef_mat(params$theta, N)
@@ -229,7 +229,7 @@ bekk_fit.bekk <- function(spec, data, QML_t_ratios = FALSE,
 
   result$AIC <- AIC(result)
   result$BIC <- BIC(result)
-  invisible(capture.output(result$Portmanteau.test <- portmanteau.test(result, lags = c(5,15,30))))
+  result$Portmanteau.test <- portmanteau.test(result, lags = 5)
 
   return(result)
 }
@@ -307,9 +307,9 @@ bekk_fit.bekka <- function(spec, data, QML_t_ratios = FALSE,
 
   if (QML_t_ratios == TRUE) {
     tratios <- QML_t_ratios_asymm(params$theta, data, spec$model$signs)
-    tratios_mat <- coef_mat_asymm(abs(tratios), N)
+    tratios_mat <- coef_mat_asymm(tratios, N)
   } else {
-    tratios_mat <- coef_mat_asymm(abs(params$t_val), N)
+    tratios_mat <- coef_mat_asymm(params$t_val, N)
   }
 
   param_mat <- coef_mat_asymm(params$theta, N)
@@ -392,7 +392,7 @@ bekk_fit.bekka <- function(spec, data, QML_t_ratios = FALSE,
 
   result$AIC <- AIC(result)
   result$BIC <- BIC(result)
-  invisible(capture.output(result$Portmanteau.test <- portmanteau.test(result, lags = c(5,15,30))))
+  result$Portmanteau.test <- portmanteau.test(result, lags = 5)
 
   return(result)
 }
@@ -427,9 +427,9 @@ bekk_fit.dbekk <- function(spec, data, QML_t_ratios = FALSE,
 
   if (QML_t_ratios == TRUE) {
     tratios <- QML_t_ratios_dbekk(params$theta, data)
-    tratios_mat <- coef_mat_diagonal(abs(tratios), N)
+    tratios_mat <- coef_mat_diagonal(tratios, N)
   } else {
-    tratios_mat <- coef_mat_diagonal(abs(params$t_val), N)
+    tratios_mat <- coef_mat_diagonal(params$t_val, N)
   }
 
   param_mat <- coef_mat_diagonal(params$theta, N)
@@ -509,7 +509,7 @@ bekk_fit.dbekk <- function(spec, data, QML_t_ratios = FALSE,
 
   result$AIC <- AIC(result)
   result$BIC <- BIC(result)
-  invisible(capture.output(result$Portmanteau.test <- portmanteau.test(result, lags = c(5,15,30))))
+  result$Portmanteau.test <- portmanteau.test(result, lags = 5)
 
   return(result)
 }
@@ -550,9 +550,9 @@ bekk_fit.dbekka <- function(spec, data, QML_t_ratios = FALSE,
 
   if (QML_t_ratios == TRUE) {
     tratios <- QML_t_ratios_dbekka(params$theta, data, spec$model$signs)
-    tratios_mat <- coef_mat_asymm_diagonal(abs(tratios), N)
+    tratios_mat <- coef_mat_asymm_diagonal(tratios, N)
   } else {
-    tratios_mat <- coef_mat_asymm_diagonal(abs(params$t_val), N)
+    tratios_mat <- coef_mat_asymm_diagonal(params$t_val, N)
   }
 
   param_mat <- coef_mat_asymm_diagonal(params$theta, N)
@@ -635,7 +635,7 @@ bekk_fit.dbekka <- function(spec, data, QML_t_ratios = FALSE,
 
   result$AIC <- AIC(result)
   result$BIC <- BIC(result)
-  invisible(capture.output(result$Portmanteau.test <- portmanteau.test(result, lags = c(5,15,30))))
+  result$Portmanteau.test <- portmanteau.test(result, lags = 5)
 
   return(result)
 }
@@ -670,9 +670,9 @@ bekk_fit.sbekk <- function(spec, data, QML_t_ratios = FALSE,
 
   if (QML_t_ratios == TRUE) {
     tratios <- QML_t_ratios_sbekk(params$theta, data)
-    tratios_mat <- coef_mat_scalar(abs(tratios), N)
+    tratios_mat <- coef_mat_scalar(tratios, N)
   } else {
-    tratios_mat <- coef_mat_scalar(abs(params$t_val), N)
+    tratios_mat <- coef_mat_scalar(params$t_val, N)
   }
 
   param_mat <- coef_mat_scalar(params$theta, N)
@@ -752,7 +752,7 @@ bekk_fit.sbekk <- function(spec, data, QML_t_ratios = FALSE,
 
   result$AIC <- AIC(result)
   result$BIC <- BIC(result)
-  #invisible(capture.output(result$Portmanteau.test <- portmanteau.test(result, lags = c(5,15,30))))
+    result$Portmanteau.test <- portmanteau.test(result, lags = 5)
 
   return(result)
 }
@@ -793,9 +793,9 @@ bekk_fit.sbekka <- function(spec, data, QML_t_ratios = FALSE,
 
   if (QML_t_ratios == TRUE) {
     tratios <- QML_t_ratios_sbekk_asymm(params$theta, data, spec$model$signs)
-    tratios_mat <- coef_mat_asymm_scalar(abs(tratios), N)
+    tratios_mat <- coef_mat_asymm_scalar(tratios, N)
   } else {
-    tratios_mat <- coef_mat_asymm_scalar(abs(params$t_val), N)
+    tratios_mat <- coef_mat_asymm_scalar(params$t_val, N)
   }
 
   param_mat <- coef_mat_asymm_scalar(params$theta, N)
@@ -877,7 +877,7 @@ bekk_fit.sbekka <- function(spec, data, QML_t_ratios = FALSE,
 
   result$AIC <- AIC(result)
   result$BIC <- BIC(result)
-  invisible(capture.output(result$Portmanteau.test <- portmanteau.test(result, lags = c(5,15,30))))
+  result$Portmanteau.test <- portmanteau.test(result, lags = 5)
 
   return(result)
 }

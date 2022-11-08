@@ -14,7 +14,7 @@
 #' obj_spec <- bekk_spec()
 #' x1 <- bekk_fit(obj_spec, StocksBonds)
 #'
-#' x2 <- bekk_sim(x1, 3000)
+#' x2 <- simulate(x1, 3000)
 #'
 #' plot(x2)
 #'
@@ -22,24 +22,24 @@
 #'
 #' @export
 
-bekk_sim <- function(spec, nobs) {
+simulate <- function(spec, nobs) {
   if(is.null(nobs) || !is.numeric(nobs) || nobs < 1){
     stop("Please provide an integer specifying the number of observations")
   }
   if(!inherits(spec,c("bekkSpec", "bekkFit"))){
     stop("Please provide an object of class bekk_fit or 'bekk_spec'.")
   }
-  UseMethod('bekk_sim')
+  UseMethod('simulate')
 }
 
 #' @export
-bekk_sim.bekk <- function(spec, nobs) {
+simulate.bekk <- function(spec, nobs) {
 
   xx <- process_object(spec)
   par <- coef_mat(xx$theta,xx$N)
   if(xx$BEKK_valid==FALSE){
-    cat("Please provide a stationary BEKK model")
-    return(NULL)
+    stop("Please provide a stationary BEKK model.")
+
   }
 
   sim_dat <- simulate_bekk_c(c(xx$theta), nobs, xx$N)
@@ -48,13 +48,13 @@ bekk_sim.bekk <- function(spec, nobs) {
 }
 
 #' @export
-bekk_sim.bekka <- function(spec, nobs) {
+simulate.bekka <- function(spec, nobs) {
 
   xx <- process_object(spec)
   par <- coef_mat_asymm(xx$theta,xx$N)
   if(xx$BEKK_valid==FALSE){
-    cat("Please provide a stationary BEKK model")
-    return(NULL)
+    stop("Please provide a stationary BEKK model.")
+
   }
   #expected_signs
   sim_dat <- simulate_bekka_c(c(xx$theta), nobs, xx$N, xx$signs, xx$expected_signs)
@@ -64,12 +64,12 @@ bekk_sim.bekka <- function(spec, nobs) {
 
 
 #' @export
-bekk_sim.dbekk <- function(spec, nobs) {
+simulate.dbekk <- function(spec, nobs) {
 
   xx <- process_object(spec)
   par <- coef_mat_diagonal(xx$theta,xx$N)
   if(xx$BEKK_valid==FALSE){
-    stop("Please provide a stationary BEKK model")
+    stop("Please provide a stationary BEKK model.")
 
   }
 
@@ -79,12 +79,12 @@ bekk_sim.dbekk <- function(spec, nobs) {
 }
 
 #' @export
-bekk_sim.dbekka <- function(spec, nobs) {
+simulate.dbekka <- function(spec, nobs) {
 
   xx <- process_object(spec)
   par <- coef_mat_asymm_diagonal(xx$theta,xx$N)
   if(xx$BEKK_valid==FALSE){
-    stop("Please provide a stationary BEKK model")
+    stop("Please provide a stationary BEKK model.")
   }
   #expected_signs
   sim_dat <- simulate_dbekka_c(c(xx$theta), nobs, xx$N, xx$signs, xx$expected_signs)
@@ -94,12 +94,12 @@ bekk_sim.dbekka <- function(spec, nobs) {
 
 
 #' @export
-bekk_sim.sbekk <- function(spec, nobs) {
+simulate.sbekk <- function(spec, nobs) {
 
   xx <- process_object(spec)
   par <- coef_mat_scalar(xx$theta,xx$N)
   if(xx$BEKK_valid==FALSE){
-    stop("Please provide a stationary BEKK model")
+    stop("Please provide a stationary BEKK model.")
   }
 
   sim_dat <- simulate_sbekk_c(c(xx$theta), nobs, xx$N)
@@ -108,12 +108,12 @@ bekk_sim.sbekk <- function(spec, nobs) {
 }
 
 #' @export
-bekk_sim.sbekka <- function(spec, nobs) {
+simulate.sbekka <- function(spec, nobs) {
 
   xx <- process_object(spec)
   par <- coef_mat_asymm_scalar(xx$theta,xx$N)
   if(xx$BEKK_valid==FALSE){
-    stop("Please provide a stationary BEKK model")
+    stop("Please provide a stationary BEKK model.")
       }
   #expected_signs
   sim_dat <- simulate_sbekka_c(c(xx$theta), nobs, xx$N, xx$signs, xx$expected_signs)

@@ -1,12 +1,12 @@
 #' Backtesting via Value-at-Risk (VaR)
 #'
-#' @description Method for calculating VaR from estimated covariance processes (\link{bekk_fit}).
+#' @description Method for backtesting a model obtained from \link{bekk_fit} in terms of VaR-forcasting accuracy using a rolling window approach.
 #'
 #' @param x An object of class "bekkFit" from the function \link{bekk_fit}.
 #' @param window_length An integer specifying the length of the rolling window.
 #' @param p A numerical value that determines the confidence level. The default value is set at 0.99 in accordance with the Basel Regulation.
 #' @param portfolio_weights A vector determining the portfolio weights to calculate the portfolio VaR. If set to "NULL", the univariate VaR for each series are calculated.
-#' @param n.ahead Number of periods to forecast conditional volatility. Default is a one-period ahead forecast.
+#' @param n.ahead Number of periods to predict conditional volatility. Default is a one-period ahead forecast.
 #' @param distribution A character string determining the assumed distribution of the residuals. Implemented are "normal", "empirical" and "t". The default is assuming the empirical distribution of the residuals.
 #' @param nc Number of cores to be used for parallel computation.
 #' @return  Returns a S3 class "backtest" object containing the VaR forecast, out-of-sample returns and backtest statistics according to the R-package "GAS". conf
@@ -47,6 +47,7 @@ backtest.bekkFit <-  function(x, window_length = 1000, p = 0.99, portfolio_weigh
   N <- ncol(data)
   n_out = n - window_length
 
+  match.arg(distribution, c("empirical", "t", "normal"))
 
 
   #out_sample_returns <-  x$data[(window_length+1):n,] %*% t(portfolio_weights)
@@ -77,9 +78,9 @@ backtest.bekkFit <-  function(x, window_length = 1000, p = 0.99, portfolio_weigh
       }
       spec = x$spec
       fit <- bekk_fit(spec, data[i:(window_length-1+i),])
-      forecast <- bekk_forecast(fit, n.ahead = n.ahead, ci = 0.5)
-      #VaR[i:(i+n.ahead-1),] = as.matrix(VaR(forecast, p = p, portfolio_weights = portfolio_weights)$VaR[(window_length+1):(window_length+n.ahead),])
-      res = as.matrix(VaR(forecast, p = p, portfolio_weights = portfolio_weights, distribution = distribution)$VaR[(window_length+1):(window_length+n.ahead),])
+      predict <- predict(fit, n.ahead = n.ahead, ci = 0.5)
+      #VaR[i:(i+n.ahead-1),] = as.matrix(VaR(predict, p = p, portfolio_weights = portfolio_weights)$VaR[(window_length+1):(window_length+n.ahead),])
+      res = as.matrix(VaR(predict, p = p, portfolio_weights = portfolio_weights, distribution = distribution)$VaR[(window_length+1):(window_length+n.ahead),])
       return(res)
 
 
@@ -120,11 +121,10 @@ backtest.bekkFit <-  function(x, window_length = 1000, p = 0.99, portfolio_weigh
 
   #  VaR <- matrix(NA, nrow = n_out, ncol = 1)
   #   i = 1
-  #   while(i <= n_out){
   #
   #     spec = x$spec
   #     fit <- bekk_fit(spec, data[i:(window_length-1+i),])
-  #     forecast <- bekk_forecast(fit, n.ahead = n.ahead, ci = 0.5)
+  #     forecast <- forecast(fit, n.ahead = n.ahead, ci = 0.5)
   #     VaR[i:(i+n.ahead-1),] = as.matrix(VaR(forecast, p = p, portfolio_weights = portfolio_weights)$VaR[(window_length+1):(window_length+n.ahead),])
   #
   #
@@ -150,9 +150,9 @@ backtest.bekkFit <-  function(x, window_length = 1000, p = 0.99, portfolio_weigh
       }
       spec = x$spec
       fit <- bekk_fit(spec, data[i:(window_length-1+i),])
-      forecast <- bekk_forecast(fit, n.ahead = n.ahead, ci = 0.5)
+      predict <- predict(fit, n.ahead = n.ahead, ci = 0.5)
 
-      res = as.matrix(VaR(forecast, p = p, portfolio_weights = portfolio_weights, distribution = distribution)$VaR[(window_length+1):(window_length+n.ahead),])
+      res = as.matrix(VaR(predict, p = p, portfolio_weights = portfolio_weights, distribution = distribution)$VaR[(window_length+1):(window_length+n.ahead),])
       return(res)
 
 

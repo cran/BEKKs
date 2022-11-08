@@ -23,7 +23,7 @@ backtest(
 
 \item{portfolio_weights}{A vector determining the portfolio weights to calculate the portfolio VaR. If set to "NULL", the univariate VaR for each series are calculated.}
 
-\item{n.ahead}{Number of periods to forecast conditional volatility. Default is a one-period ahead forecast.}
+\item{n.ahead}{Number of periods to predict conditional volatility. Default is a one-period ahead forecast.}
 
 \item{distribution}{A character string determining the assumed distribution of the residuals. Implemented are "normal", "empirical" and "t". The default is assuming the empirical distribution of the residuals.}
 
@@ -33,7 +33,7 @@ backtest(
 Returns a S3 class "backtest" object containing the VaR forecast, out-of-sample returns and backtest statistics according to the R-package "GAS". conf
 }
 \description{
-Method for calculating VaR from estimated covariance processes (\link{bekk_fit}).
+Method for backtesting a model obtained from \link{bekk_fit} in terms of VaR-forcasting accuracy using a rolling window approach.
 }
 \examples{
 \donttest{

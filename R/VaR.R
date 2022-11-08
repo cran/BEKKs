@@ -1,8 +1,8 @@
 #' Calculating Value-at-Risk (VaR)
 #'
-#' @description Method for calculating VaR from estimated covariance processes (\link{bekk_fit}) or predicted covariances (\link{bekk_forecast}).
+#' @description Method for calculating VaR from estimated covariance processes (\link{bekk_fit}) or predicted covariances (\link{forecast}).
 #'
-#' @param x An object of class "bekkFit" from the function \link{bekk_fit} or an object of class "bekkForecast" from the function \link{bekk_forecast}.
+#' @param x An object of class "bekkFit" from the function \link{bekk_fit} or an object of class "bekkForecast" from the function \link{predict}.
 #' @param p A numerical value that determines the confidence level. The default value is set at 0.99 in accordance with the Basel Regulation.
 #' @param portfolio_weights A vector determining the portfolio weights to calculate the portfolio VaR. If set to "NULL", the univariate VaR for each series are calculated.
 #' @param distribution A character string determining the assumed distribution of the residuals. Implemented are "normal", "empirical" and "t". The default is using the empirical distribution of the residuals.
@@ -41,7 +41,7 @@ VaR <- function(x, p = 0.99, portfolio_weights = NULL, distribution = "empirical
 }
 
 #' @export
-VaR.bekkFit <-  function(x, p = 0.99, portfolio_weights = NULL, distribution = "empirical")
+VaR.bekkFit <-  function(x, p = 0.99, portfolio_weights = NULL, distribution = "empirical" )
 {
   if(nrow(x$data) < 1000 && distribution == "empirical"){
     stop("Using the empirical distribution is not stable for time series with less than 1000 observations!")
@@ -49,6 +49,11 @@ VaR.bekkFit <-  function(x, p = 0.99, portfolio_weights = NULL, distribution = "
   alpha = p
   N = ncol(x$data)
   n = nrow(x$data)
+  match.arg(distribution, c("empirical", "t", "normal"))
+
+
+
+
   #specify quantiles here
   if(distribution == "t"){
     #fit skewed t
