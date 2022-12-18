@@ -46,12 +46,15 @@ VaR.bekkFit <-  function(x, p = 0.99, portfolio_weights = NULL, distribution = "
   if(nrow(x$data) < 1000 && distribution == "empirical"){
     stop("Using the empirical distribution is not stable for time series with less than 1000 observations!")
   }
+
   alpha = p
   N = ncol(x$data)
   n = nrow(x$data)
   match.arg(distribution, c("empirical", "t", "normal"))
 
-
+  if(length(portfolio_weights)!= N && !is.null(portfolio_weights)){
+    stop("Portfolio weights do no match number of time series")
+  }
 
 
   #specify quantiles here
@@ -105,10 +108,33 @@ VaR.bekkFit <-  function(x, p = 0.99, portfolio_weights = NULL, distribution = "
       }
     }
   } else {
+    if(distribution == "t"){
+      #fit skewed t
+
+        kurtos = moments::kurtosis(x$e_t%*%portfolio_weights)-3
+        df = 6/kurtos+4
+        if(df <= 4){
+          df=4.001
+        }
+        qtls <- qt(1-alpha, df = df)/sqrt(df/(df-2))
+      }
+    else if(distribution == "empirical"){
+
+      qtls <- quantile(x$e_t%*%portfolio_weights,1-alpha)
+
+      } else if(distribution == "normal"){
+      #fit skewed t
+
+      qtls <-qnorm(1-alpha)
+    } else{
+      qtls <- qnorm(1-alpha)
+    }
+
+
     VaR <- matrix(NA, nrow = nrow(x$data), ncol = 1)
     for(i in 1:nrow(x$H_t)) {
-      #VaR[i,] <- -qnorm(alpha)*sqrt(portfolio_weights%*%matrix(x$H_t[i,], ncol = ncol(x$data))%*%portfolio_weights)
-      VaR[i,] <- portfolio_weights%*%eigen_value_decomposition(matrix(x$H_t[i,], ncol = ncol(x$data)))%*%qtls
+      VaR[i,] <- qtls*sqrt(portfolio_weights%*%matrix(x$H_t[i,], ncol = ncol(x$data))%*%portfolio_weights)
+      #VaR[i,] <- portfolio_weights%*%eigen_value_decomposition(matrix(x$H_t[i,], ncol = ncol(x$data)))%*%qtls
       }
     VaR <- as.data.frame(VaR)
   }
@@ -144,7 +170,9 @@ VaR.bekkForecast <-  function(x, p = 0.99, portfolio_weights = NULL, distributio
   obj$sigma_t <- rbind(x$bekkfit$sigma_t, x$volatility_forecast)
   N = ncol(obj$data)
   n = nrow(obj$H_t)
-
+  if(length(portfolio_weights)!= N && !is.null(portfolio_weights)){
+    stop("Portfolio weights do no match number of time series")
+  }
 
   if(distribution == "t"){
     #fit skewed t
@@ -232,11 +260,34 @@ VaR.bekkForecast <-  function(x, p = 0.99, portfolio_weights = NULL, distributio
 
 
   } else {
+
+    if(distribution == "t"){
+      #fit skewed t
+
+      kurtos = moments::kurtosis(obj$e_t%*%portfolio_weights)-3
+      df = 6/kurtos+4
+      if(df <= 4){
+        df=4.001
+      }
+      qtls <- qt(1-alpha, df = df)/sqrt(df/(df-2))
+    }
+    else if(distribution == "empirical"){
+
+      qtls <- quantile(obj$e_t%*%portfolio_weights,1-alpha)
+
+    } else if(distribution == "normal"){
+      #fit skewed t
+
+      qtls <-qnorm(1-alpha)
+    } else{
+      qtls <- qnorm(1-alpha)
+    }
+
     VaR <- matrix(NA, nrow = nrow(x$bekkfit$data) + x$n.ahead, ncol = 1)
 
     for(i in 1:nrow(obj$H_t)) {
       #VaR[i,] <- -qnorm(alpha)*sqrt(portfolio_weights%*%matrix(x$H_t[i,], ncol = ncol(x$data))%*%portfolio_weights)
-      VaR[i,] <- portfolio_weights%*%eigen_value_decomposition(matrix(obj$H_t[i,], ncol = ncol(x$bekkfit$data)))%*%qtls
+      VaR[i,] <- sqrt(portfolio_weights%*%matrix(obj$H_t[i,], ncol = ncol(x$bekkfit$data))%*%portfolio_weights)*qtls
     }
     # for(i in 1:nrow(obj$H_t)) {
     #   VaR[i,] <- -qnorm(alpha)*sqrt(portfolio_weights%*%matrix(obj$H_t[i,], ncol = ncol(x$bekkfit$data))%*%portfolio_weights)
@@ -256,8 +307,8 @@ VaR.bekkForecast <-  function(x, p = 0.99, portfolio_weights = NULL, distributio
     # }
 
     for(i in 1:nrow(obj$H_t)) {
-      VaR_lower[i,] <- portfolio_weights%*%eigen_value_decomposition(matrix(H_t_lower[i,], ncol = ncol(x$bekkfit$data)))%*%qtls
-      VaR_upper[i,] <- portfolio_weights%*%eigen_value_decomposition(matrix(H_t_upper[i,], ncol = ncol(x$bekkfit$data)))%*%qtls
+      VaR_lower[i,] <- sqrt(portfolio_weights%*%matrix(H_t_lower[i,], ncol = ncol(x$bekkfit$data))%*%portfolio_weights)*qtls
+      VaR_upper[i,] <- sqrt(portfolio_weights%*%matrix(H_t_upper[i,], ncol = ncol(x$bekkfit$data))%*%portfolio_weights)*qtls
     }
     VaR_lower <- as.data.frame(VaR_lower)
     VaR_upper <- as.data.frame(VaR_upper)
