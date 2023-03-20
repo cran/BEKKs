@@ -1,6 +1,6 @@
 Package: BEKKs
 Title: Multivariate Conditional Volatility Modelling and Forecasting
-Version: 1.4.1
+Version: 1.4.2
 Author: Markus J. Fülle [aut, cre],
   Alexander Lange [aut],
   Christian M. Hafner [aut],
@@ -27,13 +27,13 @@ Imports: Rcpp, reshape2, ggplot2, mathjaxr, gridExtra, grid, ggfortify,
         lubridate, utils, pbapply, numDeriv, moments
 LinkingTo: Rcpp, RcppArmadillo
 NeedsCompilation: yes
-SystemRequirements: C++11
+SystemRequirements: C++17
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Suggests: testthat (>= 2.1.0)
 RdMacros: mathjaxr
 RoxygenNote: 7.1.2
-Packaged: 2022-12-16 23:52:54 UTC; Markus
+Packaged: 2023-03-20 18:10:58 UTC; Markus
 Repository: CRAN
-Date/Publication: 2022-12-18 16:40:14 UTC
+Date/Publication: 2023-03-20 18:30:02 UTC
