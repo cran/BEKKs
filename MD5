@@ -1,4 +1,4 @@
-421f9e6fc6d5b6837d0325d888adbf73 *DESCRIPTION
+645e0651f13e5bb26db8fb5888b680f2 *DESCRIPTION
 fdd9e3011159a1dd8e133cd4d66fe902 *LICENSE
 24125a47a448a49be316bb017abc016e *NAMESPACE
 fd764fc77faaaf459e7b881978a7f355 *R/BEKKs.R
@@ -7,7 +7,7 @@ f0a2f5305f00c850c722e3bcd122fea9 *R/RcppExports.R
 09ef86cbc81ec7a96c3f05d4c47f4515 *R/VaR.R
 36058398f953b038b0826bb6ce509c52 *R/backtest.R
 02c97e2f5f3094f91509eda98170e3a2 *R/bekk_fit.R
-02d105e2da1ffb2f4730319d5ef6bc2b *R/bekk_fit_methods.R
+f96ab6feeecba9abf4d9a80e41dd61ca *R/bekk_fit_methods.R
 dba615b18ec8c50c4ea334a0d8768fc5 *R/bekk_forecast.R
 08f74435b73e5cc04fb6aba6799ddfa2 *R/bekk_functions.R
 92480aa8712e1746ce098bf49d2c2779 *R/bekk_mc_eval.R
@@ -25,7 +25,7 @@ bb2d60ac1d45f363e31812a77c5f3d26 *R/plot.virf.R
 b2637e851cd7a0c769b8304a4365042f *R/summary.var.R
 c27973819a419c73a8c9fd021470929d *R/virf.R
 2580ad453157da7cf1b8323040fac617 *R/zzz.R
-18c77a61515e16e97892ccdf6cc24790 *build/BEKKs.pdf
+e6ec77f10a18fb209c38f6e319a63a12 *build/BEKKs.pdf
 68d30c6d85e802243b39a8a862993c1f *data/GoldStocksBonds.RData
 3bf0bc324b5f877e8f3599dcc4f5bf42 *data/StocksBonds.RData
 e9fba967f9a3fd4d4715d0a15ae3905d *man/BEKKs.Rd
@@ -34,7 +34,7 @@ dbed8e39f4d5a010e35f8479597c6809 *man/StocksBonds.Rd
 ad71518946df0c202cac58919165be50 *man/VaR.Rd
 60345284df78c4a9768938bb5add9277 *man/backtest.Rd
 2d3946dd1cc8eac394201f622c6e27f8 *man/bekk_fit.Rd
-09d50c1d26edf0566c40689f1519a12c *man/bekk_fit_methods.Rd
+39fe4532a7a9c4c3f602a95f3f937e30 *man/bekk_fit_methods.Rd
 80e38079c08f1700c27cc2a2f4d72324 *man/bekk_spec.Rd
 378c26d3c6458f053d3216b36b3c04b4 *man/figures/Data.png
 c0e9ee41c69cae8a8a9ca62ea08fa860 *man/figures/VaR_in_sample.png
