@@ -395,13 +395,13 @@ Rcpp::List  bhh_sbekk(arma::mat& r, const arma::mat& theta, int& max_iter, doubl
     double likelihood_best = likelihood_candidates(max_index);
 
     // exit criterion strange
-    //if (pow(likelihood_best - likelihood_candidates(steps.n_elem -1), 2)/abs(likelihood_candidates(steps.n_elem -1)) < crit) {
+    //if (pow(likelihood_best - likelihood_candidates(steps.n_elem -1), 2)/std::abs(likelihood_candidates(steps.n_elem -1)) < crit) {
     //  exit_loop = 1;
     //}
     if (likelihood_best < lik_all(count_loop)) {
       exit_loop = 1;
       count_loop += 1;
-    } else if (pow(likelihood_best - likelihood_candidates(steps.n_elem -1), 2)/abs(likelihood_candidates(steps.n_elem -1)) < crit) {// if (pow(likelihood_best - lik_all(count_loop), 2)/abs(lik_all(count_loop)) < crit) {
+    } else if (pow(likelihood_best - likelihood_candidates(steps.n_elem -1), 2)/std::abs(likelihood_candidates(steps.n_elem -1)) < crit) {// if (pow(likelihood_best - lik_all(count_loop), 2)/std::abs(lik_all(count_loop)) < crit) {
       exit_loop = 1;
       count_loop += 1;
       theta_candidate = theta_temp.col(max_index);
@@ -421,6 +421,7 @@ Rcpp::List  bhh_sbekk(arma::mat& r, const arma::mat& theta, int& max_iter, doubl
   arma::mat t_val = theta_candidate/s1;
   return Rcpp::List::create(Rcpp::Named("theta") = theta_candidate,
                             Rcpp::Named("t_val") = t_val,
+                            Rcpp::Named("sd") = s1,
                             Rcpp::Named("likelihood") = likelihood_final,
                             Rcpp::Named("iter") = count_loop,
                             Rcpp::Named("likelihood_iter") = lik_all);
@@ -478,13 +479,13 @@ Rcpp::List  bhh_asymm_sbekk(arma::mat& r, const arma::mat& theta, int& max_iter,
     double likelihood_best = likelihood_candidates(max_index);
 
     // exit criterion strange
-    //if (pow(likelihood_best - likelihood_candidates(steps.n_elem -1), 2)/abs(likelihood_candidates(steps.n_elem -1)) < crit) {
+    //if (pow(likelihood_best - likelihood_candidates(steps.n_elem -1), 2)/std::abs(likelihood_candidates(steps.n_elem -1)) < crit) {
     //  exit_loop = 1;
     //}
     if (likelihood_best < lik_all(count_loop)) {
       exit_loop = 1;
       count_loop += 1;
-    } else if (pow(likelihood_best - likelihood_candidates(steps.n_elem -1), 2)/abs(likelihood_candidates(steps.n_elem -1)) < crit) {// if (pow(likelihood_best - lik_all(count_loop), 2)/abs(lik_all(count_loop)) < crit) {
+    } else if (pow(likelihood_best - likelihood_candidates(steps.n_elem -1), 2)/std::abs(likelihood_candidates(steps.n_elem -1)) < crit) {// if (pow(likelihood_best - lik_all(count_loop), 2)/std::abs(lik_all(count_loop)) < crit) {
       exit_loop = 1;
       count_loop += 1;
       theta_candidate = theta_temp.col(max_index);
@@ -504,6 +505,7 @@ Rcpp::List  bhh_asymm_sbekk(arma::mat& r, const arma::mat& theta, int& max_iter,
   arma::mat t_val = theta_candidate/s1;
   return Rcpp::List::create(Rcpp::Named("theta") = theta_candidate,
                             Rcpp::Named("t_val") = t_val,
+                            Rcpp::Named("sd") = s1,
                             Rcpp::Named("likelihood") = likelihood_final,
                             Rcpp::Named("iter") = count_loop,
                             Rcpp::Named("likelihood_iter") = lik_all);

@@ -15,7 +15,7 @@ bekk_spec(
 \item{model}{A list containing the model type specification: Either "bekk" "dbekk" or "sbekk".
 Moreover it can be specified whether the model should be estimated allowing for asymmetric volatility structure.}
 
-\item{init_values}{initial values for \link{bekk_fit} during BHHH algorithm. It can be either a numerical vector of suitable dimension, or a character vector i.e. "random" to use a random starting value generator (set a seed in advance for reproducible results), or
+\item{init_values}{initial values for \link{bekk_fit} during BHHH algorithm. It can be either a numerical vector of suitable dimension, 'NULL' (default) to use a simple grid search algorithm, or a character vector i.e. "random" to use a random starting value generator (set a seed in advance for reproducible results), or
 "simple" for relying on a simple initial values generator based on typical values for BEKK parameter found in the literature. If the object from this function is passed to \link{simulate}, "init_values" are used as parameters for data generating process.}
 
 \item{signs}{An N-dimensional vector consisting of "1" or "-1" to indicate the asymmetric effects to be considered.
@@ -29,4 +29,34 @@ Returns a S3 class "bekkSpec"  object containing the specifications of the model
 }
 \description{
 Method for creating a N-dimensional BEKK model specification object prior to fitting and/or simulating.
+}
+\examples{
+\donttest{
+
+data(StocksBonds)
+
+# Fitting a symmetric BEKK model using default starting values
+# - i.e. fixed values
+obj_spec_fixed <- bekk_spec(init_values = NULL)
+x1 <- bekk_fit(obj_spec_fixed, StocksBonds, QML_t_ratios = FALSE,
+max_iter = 50, crit = 1e-9)
+# Fitting a symmetric BEKK model using initial values originating from a
+# random grid search algorithm
+obj_spec_random <- bekk_spec(init_values = "random")
+x2 <- bekk_fit(obj_spec_random, StocksBonds, QML_t_ratios = FALSE,
+max_iter = 50, crit = 1e-9)
+summary(x1)
+summary(x2)
+plot(x1)
+plot(x2)
+# Fitting an asymmetric BEKK model with default starting values
+obj_spec_fix <- bekk_spec(model = list(type = "bekk", asymmetric = TRUE),
+init_values = NULL)
+x1 <- bekk_fit(obj_spec_fix, StocksBonds)
+obj_spec_random <- bekk_spec(model = list(type = "bekk", asymmetric = TRUE),
+init_values = "random")
+x2 <- bekk_fit(obj_spec_random, StocksBonds)
+summary(x1)
+summary(x2)
+}
 }

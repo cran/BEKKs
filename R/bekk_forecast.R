@@ -1,10 +1,13 @@
-#' Forecasting conditional volatilities with BEKK models
+#' @name predict
+#' @rdname predict
+#' @title Forecasting conditional volatilities with BEKK models
 #'
 #' @description Method for predicting a N-dimensional BEKK covariances.
 #'
-#' @param x A fitted bekk model of class bekk from the \link{bekk_fit} function
+#' @param object A fitted bekk model of class "bekkFit" from the \link{bekk_fit} function
 #' @param n.ahead Number of periods to forecast conditional volatility. Default is a one-period ahead forecast.
 #' @param ci Floating point in [0,1] defining the niveau for confidence bands of the conditional volatility forecast. Default is 95 per cent niveau confidence bands.
+#' @param ... Further parameters to be passed on to the function.
 #' @return Returns a S3 class "bekkForecast" object containing the conditional volatility forecasts and respective confindence bands.
 #' @examples
 #' \donttest{#'
@@ -15,22 +18,12 @@
 #' x2 <- predict(x1, n.ahead = 1)
 #'
 #' }
-#'
-#' @export
-
-predict <- function(x, n.ahead = 1, ci = 0.95){
-
-  if (!inherits(x, 'bekkFit')) {
-    stop('Please provide and object of class "bekkFit" for "x".')
-  }
 
 
-  UseMethod('predict')
-
-}
 
 #' @export
-predict.bekk <- function(x, n.ahead = 1, ci = 0.95) {
+predict.bekk <- function(object, n.ahead = 1, ci = 0.95, ...) {
+  x <- object
   N <- ncol(x$data)
   NoBs <- nrow(x$data)
   #var_process <- sigma_bekk(xx$data, xx$C0, xx$A, xx$G)
@@ -195,9 +188,10 @@ predict.bekk <- function(x, n.ahead = 1, ci = 0.95) {
   class(result) <- c('bekkForecast', 'bekk')
   return(result)
 }
-
+#' @rdname predict
 #' @export
-predict.bekka <- function(x, n.ahead = 1, ci = 0.95) {
+predict.bekka <- function(object, n.ahead = 1, ci = 0.95, ...) {
+  x <- object
   N <- ncol(x$data)
   NoBs <- nrow(x$data)
   #var_process <- sigma_bekk(xx$data, xx$C0, xx$A, xx$G)
@@ -365,9 +359,10 @@ predict.bekka <- function(x, n.ahead = 1, ci = 0.95) {
   return(result)
 }
 
-
+#' @rdname predict
 #' @export
-predict.dbekk <- function(x, n.ahead = 1, ci = 0.95) {
+predict.dbekk <- function(object, n.ahead = 1, ci = 0.95, ...) {
+  x <- object
   N <- ncol(x$data)
   NoBs <- nrow(x$data)
   #var_process <- sigma_bekk(xx$data, xx$C0, xx$A, xx$G)
@@ -529,9 +524,10 @@ predict.dbekk <- function(x, n.ahead = 1, ci = 0.95) {
   class(result) <- c('bekkForecast', 'dbekk')
   return(result)
 }
-
+#' @rdname predict
 #' @export
-predict.dbekka <- function(x, n.ahead = 1, ci = 0.95) {
+predict.dbekka <- function(object, n.ahead = 1, ci = 0.95, ...) {
+  x <- object
   N <- ncol(x$data)
   NoBs <- nrow(x$data)
   #var_process <- sigma_bekk(xx$data, xx$C0, xx$A, xx$G)
@@ -698,9 +694,10 @@ predict.dbekka <- function(x, n.ahead = 1, ci = 0.95) {
   class(result) <-  c('bekkForecast', 'dbekka')
   return(result)
 }
-
+#' @rdname predict
 #' @export
-predict.sbekk <- function(x, n.ahead = 1, ci = 0.95) {
+predict.sbekk <- function(object, n.ahead = 1, ci = 0.95, ...) {
+  x <- object
   N <- ncol(x$data)
   NoBs <- nrow(x$data)
   #var_process <- sigma_bekk(xx$data, xx$C0, xx$A, xx$G)
@@ -863,8 +860,10 @@ predict.sbekk <- function(x, n.ahead = 1, ci = 0.95) {
   return(result)
 }
 
+#' @rdname predict
 #' @export
-predict.sbekka <- function(x, n.ahead = 1, ci = 0.95) {
+predict.sbekka <- function(object, n.ahead = 1, ci = 0.95, ...) {
+  x <- object
   N <- ncol(x$data)
   NoBs <- nrow(x$data)
   #var_process <- sigma_bekk(xx$data, xx$C0, xx$A, xx$G)
