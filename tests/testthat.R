@@ -1,4 +1,4 @@
 library(testthat)
 library(BEKKs)
 
-#test_check("BEKKs")
+test_check("BEKKs")
